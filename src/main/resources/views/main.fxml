@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import io.github.palexdev.materialfx.font.MFXFontIcon?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="mainRootAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #293742;" stylesheets="@../css/Common.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="africa.jopen.controllers.MainController">
+   <children>
+      <AnchorPane layoutY="45.0" style="-fx-background-color: #394b59;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="45.0">
+         <children>
+            <ImageView fitHeight="21.0" fitWidth="30.0" layoutX="11.0" layoutY="646.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="23.0">
+               <image>
+                  <Image url="@../images/settings@64-px.png" />
+               </image>
+            </ImageView>
+            <VBox prefHeight="586.0" prefWidth="55.0">
+               <children>
+                  <ImageView fitHeight="38.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="46.0" prefWidth="1280.0" style="-fx-background-color: #000;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="285.0" spacing="10.0" style="-fx-background-color: #394b59;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label text="Swift Reqst" textFill="#eeeeee">
+                     <font>
+                        <Font name="MFXResources" size="18.0" />
+                     </font></Label>
+                  <TextField prefHeight="25.0" prefWidth="160.0" promptText="Search" style="-fx-background-color: #293742; -fx-padding: 4; -fx-border-radius: 5; -fx-background-radius: 12 12 12 12;">
+                     <padding>
+                        <Insets right="5.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin></TextField>
+               </children>
+               <padding>
+                  <Insets left="2.0" />
+               </padding>
+            </HBox>
+            <HBox fx:id="windowHeader" alignment="CENTER_RIGHT" layoutX="286.0" layoutY="1.0" prefHeight="45.0" prefWidth="995.0" spacing="10.0" style="-fx-background-color: #394b59;" AnchorPane.leftAnchor="286.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
+               <padding>
+                  <Insets right="10.0" />
+               </padding>
+               <children>
+                  <ImageView fx:id="imgBtnFullScreen" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+                     <image>
+                        <Image url="@../images/fullscreen@32-px.png" />
+                     </image>
+                  </ImageView>
+                  <MFXFontIcon fx:id="minimizeIcon" description="mfx-circle" size="15.0" styleClass="minimize-icon">
+                     <color>
+                        <Color red="0.20589669048786163" green="0.6842105388641357" blue="0.24575617909431458" />
+                     </color></MFXFontIcon>
+                  <MFXFontIcon fx:id="closeIcon" description="mfx-circle" size="15.0" styleClass="close-icon">
+                     <color>
+                        <Color red="1.0" green="0.023148147389292717" blue="0.023148147389292717" />
+                     </color></MFXFontIcon>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+    <AnchorPane fx:id="welcomeRecents" layoutX="78.0" layoutY="122.0" minHeight="0.0" minWidth="0.0" prefHeight="560.0" prefWidth="253.0" style="-fx-background-color: #30404d; -fx-background-radius: 10;" visible="false" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="78.0" AnchorPane.topAnchor="122.0">
+         <children>
+            <Label layoutX="74.0" layoutY="10.0" prefHeight="17.0" prefWidth="123.0" text="Recent   Repositories" textFill="WHITE" underline="true">
+               <font>
+                  <Font name="SansSerif Regular" size="12.0" />
+               </font>
+            </Label>
+            <VBox alignment="TOP_CENTER" layoutX="12.0" layoutY="12.0" prefHeight="519.0" prefWidth="229.0" spacing="10.0" style="-fx-background-color: #202b33; -fx-background-radius: 16;" AnchorPane.bottomAnchor="29.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="12.0">
+               <children>
+                  <JFXButton prefHeight="25.0" prefWidth="115.0" style="-fx-cursor: hand;" text="Cread/Add" textFill="#f8f8f8">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/add-folder-32-px.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </JFXButton>
+                  <Line endX="100.0" startX="-100.0" />
+                  <JFXButton layoutX="67.0" layoutY="20.0" prefHeight="25.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Import from File" textFill="#f8f8f8">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" />
+
+                     </graphic>
+                  </JFXButton>
+                  <Line endX="100.0" layoutX="125.0" layoutY="56.0" startX="-100.0" />
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets top="20.0" />
+         </padding>
+      </AnchorPane>
+      <Label fx:id="welcomeTitle" layoutX="385.0" layoutY="151.0" prefHeight="78.0" prefWidth="433.0" text="Swift Reqst" textFill="#f5f5f5" visible="false">
+         <font>
+            <Font name="MFXResources" size="53.0" />
+         </font>
+      </Label>
+      <Label fx:id="welcomeMessage" layoutX="385.0" layoutY="261.0" prefHeight="146.0" prefWidth="415.0" text="Welcome , this is a greate Http Client To make your Development easy and smoot" textFill="#f5f5f5" visible="false" wrapText="true">
+         <font>
+            <Font name="Visby Round CF Regular" size="22.0" />
+         </font>
+      </Label>
+      <VBox fx:id="welcomeCreateNewForm" layoutX="385.0" layoutY="383.0" prefHeight="200.0" prefWidth="518.0" spacing="5.0" style="-fx-background-color: #202b33; -fx-background-radius: 30;" visible="false">
+         <children>
+            <Label text="Create New Repository" textFill="WHITE">
+               <font>
+                  <Font name="Visby Round CF Regular" size="20.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="14.0" />
+               </VBox.margin>
+            </Label>
+            <TextField prefHeight="25.0" prefWidth="383.0" style="-fx-background-color: #293742; -fx-background-radius: 20;">
+               <VBox.margin>
+                  <Insets left="5.0" right="20.0" top="10.0" />
+               </VBox.margin>
+            </TextField>
+            <HBox spacing="30.0">
+               <VBox.margin>
+                  <Insets left="15.0" top="50.0" />
+               </VBox.margin>
+               <children>
+                  <JFXButton buttonType="RAISED" style="-fx-cursor: hand;" text="Create" textFill="#e8e8e8" underline="true" />
+                  <JFXButton buttonType="RAISED" layoutX="10.0" layoutY="10.0" style="-fx-cursor: hand;" text="Cancel" textFill="#e8e8e8" underline="true" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets left="20.0" top="10.0" />
+         </padding>
+      </VBox>
+      <SplitPane dividerPositions="0.130327868852459, 0.5704918032786885" layoutX="57.0" layoutY="47.0" prefHeight="672.0" prefWidth="1222.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="47.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #293742;">
+               <children>
+                  <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <TreeView prefHeight="35.0" prefWidth="215.0" style="-fx-background-color: #293742;" />
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #293742;">
+               <children>
+                  <HBox alignment="CENTER" maxHeight="70.0" minHeight="70.0" prefHeight="70.0" prefWidth="540.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <children>
+                        <HBox fx:id="addressSection" alignment="CENTER" maxHeight="30.0" maxWidth="800.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <StackPane fx:id="comboContainer" maxHeight="35.0" minHeight="35.0" minWidth="100.0">
+                                 <children>
+                                    <ComboBox fx:id="httpMethodBox" minHeight="35.0" minWidth="100.0" prefHeight="35.0" prefWidth="83.0" promptText="Post" style="-fx-background-color: #3c4e5c;" StackPane.alignment="CENTER" />
+                                 </children>
+                              </StackPane>
+                              <TextField fx:id="addressField" maxHeight="35.0" minHeight="35.0" promptText="URL" style="-fx-background-color: #222e36;" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </TextField>
+                              <StackPane fx:id="sendButtonPane" maxHeight="35.0" HBox.hgrow="SOMETIMES">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <children>
+                                    <JFXButton fx:id="sendButton" defaultButton="true" graphicTextGap="10.0" minWidth="80.0" onAction="#sendRequest" prefHeight="30.0" ripplerFill="WHITE" style="-fx-background-color: #3c4e5c;" text="Execute" textAlignment="CENTER" textFill="WHITE">
+                                       <padding>
+                                          <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+                                       </padding>
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                       <StackPane.margin>
+                                          <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                                       </StackPane.margin>
+                                    </JFXButton>
+                                 </children>
+                              </StackPane>
+                           </children>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets left="5.0" right="5.0" />
+                     </padding>
+                  </HBox>
+                  <AnchorPane layoutX="8.0" layoutY="57.0" prefHeight="605.0" prefWidth="513.0" style="-fx-background-color: #30404d; -fx-background-radius: 20;" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="62.0">
+                     <children>
+                        <TabPane layoutX="7.0" layoutY="2.0" prefHeight="605.0" prefWidth="496.0" style="-fx-background-color: #202b33; -fx-background-radius: 12;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                          <tabs>
+                            <Tab text="Body">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #30404d;">
+                                       <children>
+                                          <VBox layoutX="5.0" layoutY="9.0" prefHeight="543.0" prefWidth="596.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="9.0">
+                                             <children>
+                                                <ComboBox fx:id="comboBoxSendingType" prefWidth="150.0" promptText="Sending As Json" style="-fx-background-color: #3e4f5d;" />
+                                                <Pane fx:id="codearePane" prefHeight="518.0" prefWidth="485.0" style="-fx-background-color: #27343e; -fx-background-radius: 1 10 20 20;" VBox.vgrow="ALWAYS">
+                                                   <VBox.margin>
+                                                      <Insets bottom="10.0" />
+                                                   </VBox.margin></Pane>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                            <Tab text="Authentication">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                              </content>
+                            </Tab>
+                              <Tab text="Query Params">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                 </content>
+                              </Tab>
+                              <Tab text="Headers">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                 </content>
+                              </Tab>
+                          </tabs>
+                        </TabPane>
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #293742;" />
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
