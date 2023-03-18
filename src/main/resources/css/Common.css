@@ -255,3 +255,70 @@
     -fx-fill: teal !important;
 }
 
+
+
+
+
+
+
+
+
+.tree-view, .tree-cell {
+    -fx-background-color: #25323b ;
+    -fx-text-fill: white ;
+}
+.tree-cell:expanded {
+    -fx-background-color: #404040 ;
+}
+.tree-cell:selected {
+    -fx-font-weight: bold ;
+}
+.tree-cell {
+    -fx-padding: 0.75em 0em 0.75em 0em ;
+}
+.tree-cell:sub-tree-item {
+    -fx-padding: 0.25em ;
+}
+
+
+.tree-cell:filled:selected:focused, .tree-cell:filled:selected {
+    -fx-background-color: #666666;
+}
+
+.tree-cell:filled:hover {
+    -fx-background-color: #555555;
+}
+/*
+
+
+!* Define CSS rules for the TreeView *!
+.tree-view {
+    -fx-border-color: gray;
+    -fx-border-width: 1px;
+    -fx-background-color: #30404d;
+}
+
+!* Define CSS rules for the TreeCell *!
+.tree-cell {
+    -fx-padding: 2px 5px;
+    -fx-text-fill: black;
+    -fx-font-weight: normal;
+    -fx-border-color: transparent;
+}
+
+.tree-disclosure-node {
+    -fx-background-color: white;
+}
+!* Define CSS rules for the selected TreeCell *!
+.tree-cell:selected {
+    -fx-background-color: lightblue;
+}
+
+!* Define CSS rules for the focused TreeCell *!
+.tree-cell:focused {
+    -fx-border-color: gray;
+    -fx-border-width: 1px;
+    -fx-background-color: #30404d;
+}
+
+*/

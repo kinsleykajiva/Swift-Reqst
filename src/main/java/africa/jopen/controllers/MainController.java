@@ -48,6 +48,8 @@ public class MainController implements Initializable {
     private ComboBox<SendingRequestTypes> comboBoxSendingType;
     @FXML
     public ImageView imgBtnFullScreen;
+ @FXML
+    public TreeView<String> treeView;
 
     @FXML
     public VBox vBoxTree;
@@ -102,7 +104,9 @@ public class MainController implements Initializable {
         rawInputArea.setHighlighter(HighlighterFactory.getHighlighter(HTTPConstants.JSON));
 
         var j = new Repositorybuilder();
-        TreeView<String> treeView = new TreeView<String>(j.generateTree());
+       /* TreeView<String> treeView = new TreeView<String>(j.generateTree());
+        TreeView<String> treeView = new TreeView<String>(j.generateTree());*/
+        treeView.setRoot(j.generateTree());
         treeView.setEditable(true);
 
         treeView.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>(){
@@ -112,7 +116,7 @@ public class MainController implements Initializable {
             }
         });
 
-        vBoxTree.getChildren().add(treeView);
+      //  vBoxTree.getChildren().add(treeView);
         // TextFieldTreeCellImpl
         // vBoxTree.getChildren().add(j.generateTree());
 

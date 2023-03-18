@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 import java.util.List;
 
@@ -66,7 +67,8 @@ public class Repositorybuilder extends Node {
     public static final class TextFieldTreeCellImpl extends TreeCell<String> {
 
         private TextField textField;
-        private ContextMenu addMenu = new ContextMenu();
+        private ContextMenu addFolderMenu = new ContextMenu();
+        private ContextMenu addFileMenu = new ContextMenu();
 
         public TextFieldTreeCellImpl() {
             MenuItem addFolderMenuItem = new MenuItem("Add Folder");
@@ -99,7 +101,8 @@ public class Repositorybuilder extends Node {
                 }
             });
 
-            addMenu.getItems().addAll(addFolderMenuItem, addFileMenuItem ,deleteFileMenuItem);
+            addFolderMenu.getItems().addAll(addFolderMenuItem, addFileMenuItem ,deleteFileMenuItem);
+            addFileMenu.getItems().addAll(deleteFileMenuItem);
         }
 
         @Override
@@ -129,6 +132,7 @@ public class Repositorybuilder extends Node {
             if (empty) {
                 setText(null);
                 setGraphic(null);
+                setContextMenu(null);
             } else {
                 if (isEditing()) {
                     if (textField != null) {
@@ -139,8 +143,10 @@ public class Repositorybuilder extends Node {
                 } else {
                     setText(getString());
                     setGraphic(getTreeItem().getGraphic());
-                    if (!getTreeItem().isLeaf() && getTreeItem().getParent() != null) {
-                        setContextMenu(addMenu);
+                    if (!getTreeItem().isLeaf() /*&& getTreeItem().getParent() != null*/) {
+                        setContextMenu(addFolderMenu);
+                    }else{
+                        setContextMenu(addFileMenu);
                     }
                 }
             }
