@@ -8,16 +8,21 @@ import africa.jopen.utils.HTTPConstants;
 import africa.jopen.utils.Repositorybuilder;
 import africa.jopen.utils.codearea.EverestCodeArea;
 import africa.jopen.utils.codearea.highlighters.HighlighterFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.github.palexdev.materialfx.font.MFXFontIcon;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -49,12 +54,15 @@ public class MainController implements Initializable {
     @FXML
     public ImageView imgBtnFullScreen;
  @FXML
-    public TreeView<String> treeView;
+    public Accordion accordioFolders;
 
     @FXML
     public VBox vBoxTree;
+    @FXML
+    private MFXFontIcon closeIcon;
 
-
+    @FXML
+    private MFXFontIcon minimizeIcon;
     private EverestCodeArea rawInputArea;
 
     @Override
@@ -66,6 +74,13 @@ public class MainController implements Initializable {
         Rectangle2D bounds = screen.getBounds();
         double screenWidth = bounds.getWidth();
         double screenHeight = bounds.getHeight();
+
+
+        closeIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> Platform.exit());
+
+        minimizeIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> ((Stage) mainRootAnchorPane.getScene().getWindow()).setIconified(true));
+
+
         imgBtnFullScreen.setOnMouseClicked(e -> {
             // Stage stage = currentStage();
            /* stage.setX(0);
@@ -106,17 +121,24 @@ public class MainController implements Initializable {
         var j = new Repositorybuilder();
        /* TreeView<String> treeView = new TreeView<String>(j.generateTree());
         TreeView<String> treeView = new TreeView<String>(j.generateTree());*/
-        treeView.setRoot(j.generateTree());
-        treeView.setEditable(true);
+      /*  treeView.setRoot(j.generateTree());
+        treeView.setEditable(true);*/
 
-        treeView.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>(){
+       /* treeView.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>(){
             @Override
             public TreeCell<String> call(TreeView<String> p) {
                 return new Repositorybuilder.TextFieldTreeCellImpl();
             }
-        });
+        });*/
 
-      //  vBoxTree.getChildren().add(treeView);
+        try {
+            j.generateTree(accordioFolders);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        //  vBoxTree.getChildren().add();
         // TextFieldTreeCellImpl
         // vBoxTree.getChildren().add(j.generateTree());
 

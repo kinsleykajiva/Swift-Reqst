@@ -3,13 +3,15 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import io.github.palexdev.materialfx.font.MFXFontIcon?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -21,7 +23,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainRootAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #293742;" stylesheets="@../css/Common.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="africa.jopen.controllers.MainController">
+<AnchorPane fx:id="mainRootAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1380.0" style="-fx-background-color: #293742;" stylesheets="@../css/Common.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="africa.jopen.controllers.MainController">
    <children>
       <AnchorPane layoutY="45.0" style="-fx-background-color: #394b59;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="45.0">
          <children>
@@ -154,15 +156,44 @@
             <Insets left="20.0" top="10.0" />
          </padding>
       </VBox>
-      <SplitPane dividerPositions="0.130327868852459, 0.5704918032786885" layoutX="57.0" layoutY="47.0" prefHeight="672.0" prefWidth="1222.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="47.0">
+      <SplitPane dividerPositions="0.1787878787878788, 0.5916666666666667" layoutX="57.0" layoutY="47.0" prefHeight="672.0" prefWidth="1222.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="47.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #293742;">
                <children>
-                  <VBox fx:id="vBoxTree" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <VBox fx:id="vBoxTree" alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <TreeView fx:id="treeView" prefHeight="665.0" prefWidth="156.0" style="-fx-background-color: #293742;" VBox.vgrow="ALWAYS" />
-                     </children>
-                  </VBox>
+                        <JFXButton buttonType="RAISED" prefHeight="31.0" prefWidth="201.0" style="-fx-background-color: #394b59; -fx-text-fill: #afb8be;" text="Add New Folder" textFill="#f3f3f3" VBox.vgrow="ALWAYS">
+                           <graphic>
+                              <ImageView fitHeight="23.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/add-folder@64-px.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </JFXButton>
+                        <Accordion fx:id="accordioFolders">
+                          <panes>
+                            <TitledPane animated="false" text="untitled 1">
+                                 <content>
+                                    <VBox>
+                                       <children>
+                                          <Label text=" sdfsdf ds dfs" />
+                                          <ListView prefHeight="200.0" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                 </content>
+                              </TitledPane>
+                            <TitledPane animated="false" text="untitled 2" />
+                          </panes>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </Accordion>
+                     </children></VBox>
+
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #293742;">

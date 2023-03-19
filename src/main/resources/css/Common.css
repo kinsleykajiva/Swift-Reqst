@@ -322,3 +322,160 @@
 }
 
 */
+
+
+
+
+
+
+
+
+/* Set the base Metro theme styles for the accordion */
+.accordion {
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 0px;
+    -fx-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1);
+}
+
+/* Set the title pane background color and padding */
+.accordion .titled-pane {
+    -fx-background-color: #afb8be;
+    -fx-padding: 1px;
+    -fx-text-fill: white;
+}
+
+/* Set the title label color and font size */
+.accordion .titled-pane .title {
+    -fx-text-fill: white;
+    -fx-font-size: 9pt;
+    -fx-background-color: #394b59;
+}
+
+/* Set the title pane border style */
+.accordion .titled-pane > .title {
+    -fx-border-color: #282828;
+    -fx-border-width: 1px;
+
+    -fx-border-radius: 0px;
+    -fx-background-insets: 0px;
+}
+
+.accordion > .titled-pane > .title > .arrow-button {
+    -fx-background-color: transparent;
+
+    -fx-padding: 9px;
+}
+.accordion > .titled-pane > .title > .arrow-button > .arrow {
+    -fx-background-color: white;
+    /*-fx-graphic: url("../images/folder@24px.png");*/
+    /*-fx-shape: "M 0 0 L 6 6 L 0 12 Z";*/
+}
+.accordion .titled-pane > .title > .arrow {
+    -fx-background-color: white;
+    -fx-padding: 0 10px;
+}
+.accordion > .titled-pane > .content {
+    /*-fx-background-color: #202b33;;*/
+    -fx-padding: 0px;
+}
+
+
+
+
+
+
+
+
+
+
+.list-view .list-cell:filled:selected {
+    -fx-background-color: #3c4e5c;
+    -fx-text-fill: white;
+}
+
+.list-view .list-cell:hover {
+    -fx-background-color: #afb8be;
+    -fx-text-fill: #333;
+}
+
+/*.accordion > .titled-pane > .title > .arrow-button > .arrow {
+    -fx-padding: 0px 10px;
+}*/
+
+
+
+
+/*
+.accordion {
+    -fx-border-color: #30404d;;
+    -fx-border-width: 0px 0px 1px 0px;
+    -fx-text-fill: #ffffff;
+}
+
+.accordion > .titled-pane > .title {
+    -fx-background-color: #202b33;;
+    -fx-text-fill: #ffffff;
+}
+
+
+
+
+.accordion > .titled-pane:focused > .title {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: #ffffff;
+}
+
+.accordion > .titled-pane:focused > .content {
+    -fx-background-color: #eaeaea;
+}*/
+
+/*
+.accordion > .titled-pane > .title > .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0px;
+}
+
+.accordion > .titled-pane > .title > .arrow-button > .arrow {
+    -fx-background-color: #ffffff;
+    -fx-shape: "M 0 0 L 6 6 L 0 12 Z";
+    -fx-scale-x: 1.5;
+    -fx-scale-y: 1.5;
+}
+*/
+
+
+
+
+/* Set the base Metro theme styles for the ListView */
+/*
+.list-view {
+    -fx-background-color: #202b33;
+    -fx-control-inner-background: #222e36;
+    -fx-padding: 10px;
+    -fx-font-size: 8pt;
+}
+*/
+
+/* Set the style for the ListView items */
+/*.list-view .list-cell {
+
+    -fx-background-color: transparent;
+    -fx-padding: 10px;
+    -fx-text-fill: white;
+}*/
+
+
+
+/* Set the style for the selected ListView items */
+/**/
+
+/* Set the style for the hover state of the ListView items */
+/**/
+
+/* Set the style for the selected and hover states of the ListView items */
+/*.list-view .list-cell:filled:selected:hover {
+    -fx-background-color: #c1cbd0;
+    -fx-text-fill: white;
+}*/
+

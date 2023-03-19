@@ -1,7 +1,10 @@
 package africa.jopen.utils;
 
+
+import atlantafx.base.theme.Tweaks;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -11,8 +14,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
+
+import static atlantafx.base.theme.Styles.DENSE;
+import static atlantafx.base.theme.Styles.toggleStyleClass;
 
 public class Repositorybuilder extends Node {
 
@@ -48,24 +55,106 @@ public class Repositorybuilder extends Node {
             {"title" : "Users Folder"  ,"type":"folder" , "children":[] }         
             ]
             """;
-    TreeItem<String> rootNode =
-            new TreeItem<>("Root", new ImageView(new Image(getClass().getResourceAsStream("/images/settings@32-px.png"))));
 
-    public TreeItem<String> generateTree(){
-        rootNode.setExpanded(true);
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            Structure[] structures = mapper.readValue(json, Structure[].class);
-            for (Structure structure : structures) {
-                rootNode.getChildren().add(structure.toTreeItem());
+    final double  imageSize =24;
+    ImageView folderIcon = new ImageView(new Image( getClass().getResourceAsStream("/images/folder@32-px.png"),imageSize ,imageSize ,true,true ));
+    ImageView fileIcon = new ImageView(new Image( getClass().getResourceAsStream("/images/file@32-px.png"),imageSize ,imageSize ,true,true ));
+    TreeItem<String> rootNode =new TreeItem<>("Root", folderIcon);
+
+    public Accordion  generateTree(Accordion accordion ) throws JsonProcessingException {
+
+        accordion.getPanes().clear();
+        ObjectMapper objectMapper = new ObjectMapper();
+        Folder[] folders = objectMapper.readValue(json, Folder[].class);
+        for (Folder folder : folders) {
+            if (folder.getType().equals("folder")) {
+                TitledPane titledPane = new TitledPane();
+                titledPane.setText(folder.getTitle());
+                VBox vBox = new VBox();
+                JFXButton btnAdd = new JFXButton("Add New Request");
+                Label ignore = new Label("-");
+                // add styling using inlined css
+                btnAdd.setStyle("-fx-background-color: #394b59; -fx-text-fill: #afb8be;");
+
+                btnAdd.getStyleClass().add("button-raised");
+
+                btnAdd.setOnAction(e -> {
+
+                });
+                vBox.getChildren().add(btnAdd);
+                vBox.getChildren().add(ignore);
+                ListView<String> listView = new ListView<>();
+
+
+
+                if (folder.getChildren() != null) {
+                    for (Folder childFolder : folder.getChildren()) {
+                        listView.getItems().add(childFolder.getTitle());
+                    }
+                    listView.setOnMouseClicked(e -> {
+                        String selectedItem = listView.getSelectionModel().getSelectedItem();
+                    /*if (selectedItem != null) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Item Clicked");
+                        alert.setHeaderText(null);
+                        alert.setContentText(selectedItem + " was clicked.");
+                        alert.showAndWait();
+                    }*/
+                    });
+
+                    //listView.setStyle("-fx-background-color: #394b59; -fx-text-fill: #afb8be;");
+                    // set list margin  20px
+                    vBox.getChildren().add(listView);
+                }
+
+                titledPane.setContent(vBox);
+                accordion.getPanes().add(titledPane);
             }
-            return rootNode;
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        }
+
+        accordion.getPanes().forEach(p -> toggleStyleClass(p, Tweaks.ALT_ICON));
+      //  accordion.getPanes().forEach(p -> toggleStyleClass(p, DENSE));
+      return accordion;
+    }
+
+    static class Folder {
+        private String title;
+        private String type;
+        private Folder[] children;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public Folder[] getChildren() {
+            return children;
+        }
+
+        public void setChildren(Folder[] children) {
+            this.children = children;
         }
     }
-    public static final class TextFieldTreeCellImpl extends TreeCell<String> {
 
+
+
+
+
+    public static final class TextFieldTreeCellImpl extends TreeCell<String> {
+        final double  imageSize =24;
+        ImageView folderIcon = new ImageView(new Image( getClass().getResourceAsStream("/images/folder@32-px.png"),imageSize ,imageSize ,true,true ));
+        ImageView fileIcon = new ImageView(new Image( getClass().getResourceAsStream("/images/file@32-px.png"),imageSize ,imageSize ,true,true ));
         private TextField textField;
         private ContextMenu addFolderMenu = new ContextMenu();
         private ContextMenu addFileMenu = new ContextMenu();
@@ -75,7 +164,7 @@ public class Repositorybuilder extends Node {
             addFolderMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent t) {
                     TreeItem<String> newFolder =
-                            new TreeItem<>("New Folder", new ImageView(new Image(getClass().getResourceAsStream("/images/settings@32-px.png"))));
+                            new TreeItem<>("New Folder", folderIcon   );
                     getTreeItem().getChildren().add(newFolder);
                     newFolder.setExpanded(true);
                 }
@@ -85,7 +174,7 @@ public class Repositorybuilder extends Node {
             addFileMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent t) {
                     TreeItem<String> newFile =
-                            new TreeItem<>("New File", new ImageView(new Image(getClass().getResourceAsStream("/images/settings@32-px.png"))));
+                            new TreeItem<>("New File", fileIcon  );
                     getTreeItem().getChildren().add(newFile);
                 }
             });
