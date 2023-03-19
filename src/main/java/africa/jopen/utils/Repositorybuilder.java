@@ -129,8 +129,9 @@ public Accordion accordion;
     private BuildNewTile getBuildNewTile(Folder folder) {
         EditableTitledPane titledPane = new EditableTitledPane(folder.getTitle());
         ObservableList<String> items = FXCollections.observableArrayList();
+
         titledPane.setStyle("-fx-background-color: #394b59;-fx-text-fill: white;");
-        ListView<String> listView = new ListView<>();
+        ListView<String> listView = new ListView<>(items);
         VBox vBox = new VBox();
         JFXButton btnAdd = new JFXButton("Add New Request");
         Label ignore = new Label("-");
@@ -139,95 +140,66 @@ public Accordion accordion;
         btnAdd.getStyleClass().add("button-raised");
         btnAdd.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog("New Request");
-            dialog.setTitle("New Request");
+            dialog.setTitle("New Request File");
             dialog.setHeaderText("Enter the name of the new request");
             dialog.setContentText("Request Name:");
             dialog.showAndWait().ifPresent(name -> {
 
-                if (name != null) {
-                    name = name.trim();
-                    if (name.isEmpty()) {
-                        FXAlert.showWarning("Empty Name ", "Request name cannot be empty ");
-                        return;
-                    }
-                    // remove duplicates from list
-                    if (items.contains(name)) {
-                        FXAlert.showWarning("Duplicate Found ", "Request name already exists in this folder ");
-                        return;
-                    }
-                    //  items.remove(name);
-                    items.add(name);
-                    listView.getItems().add(name);
+                name = name.trim();
+                if (name.isEmpty()) {
+                    FXAlert.showWarning("Empty Name ", "Request name cannot be empty ");
+                    return;
+                }
+                // remove duplicates from list
+                if (items.contains(name)) {
+                    FXAlert.showWarning("Duplicate Found ", "Request name already exists in this folder ");
+                    return;
+                }
+                ObjectMapper mapper = new ObjectMapper();
+                //  items.remove(name);
+                /*items.add(name);
+                listView.getItems().setAll(items);*/
 
-                    // find the corresponding folder in folderList
-                    for (Folder folder1 : folderList) {
-                        if (folder1.getTitle().equals(titledPane.getText())) {
-                            // create new child folder and add it to the children list
-                            Folder newChild = new Folder();
-                            newChild.setTitle(name);
-                            newChild.setType("file");
-                            newChild.setChildren(null);
-                            folder1.getChildren().add(newChild);
-                            break;
+                // find the corresponding folder in folderList
+                for (Folder folder1 : folderList) {
+                    if (folder1.getTitle().equals(titledPane.getText())) {
+                        // create new child folder and add it to the children list
+                        Folder newChild = new Folder();
+                        newChild.setTitle(name);
+                        newChild.setType("file");
+                        newChild.setChildren(null);
+                        if(folder1.getChildren() ==null){
+                            folder1.setChildren(new ArrayList<>());
                         }
-                    }
+                        folder1.getChildren().add(newChild);
+                        for (Folder childFolder : folder1.getChildren()) {
+                            if(!items.contains(childFolder.getTitle())){
+                                items.add(childFolder.getTitle());
 
-                    try {
-                        ObjectMapper mapper = new ObjectMapper();
-                        String json = mapper.writeValueAsString(folderList);
-                        System.out.println("||||json = " + json);
-                    } catch (JsonProcessingException jsonProcessingException) {
-                        jsonProcessingException.printStackTrace();
+                                try {
+                                    String jsonString =   mapper.writerWithDefaultPrettyPrinter().writeValueAsString(folder1);
+                                    DatabaseManager.getInstance().updateNavigationFolder(new NavigationEntity(folder1.getNavigationID(),-1,folder1.getTitle(), jsonString));
+                                } catch (JsonProcessingException e1) {
+
+                                    FXAlert.showException(e1.getCause() , "Error while updating navigation folder");
+                                    throw new RuntimeException(e1);
+                                }
+                            }
+
+                        }
+                        //listView.getItems().addAll(items);
+                        break;
                     }
+                }
+
+                try {
+
+                    String json = mapper.writeValueAsString(folderList);
+                    System.out.println("||||json = " + json);
+                } catch (JsonProcessingException jsonProcessingException) {
+                    jsonProcessingException.printStackTrace();
                 }
             });
-           /* dialog.showAndWait().ifPresent(name -> {
-                System.out.println("xx6666666xName: " + name);
-                if (name != null) {
-                    name = name.trim();
-                    System.out.println("xxxName: " + name);
-                    // remove duplicates from list
-                    if (items.contains(name)) {
-                        FXAlert.showWarning("Duplicate Found ", "Request name already exists in this folder ");
-                        return;
-                    }
-                    //  items.remove(name);
-                    items.add(name);
-                    listView.getItems().add(name);
-
-                    Folder newFolder = new Folder();
-                    newFolder.setTitle(name);
-                    newFolder.setType("file");
-                    newFolder.setChildren(null);
-
-                   // folderList.remove(newFolder);
-                    if(folder.getChildren() == null) {
-                        for (Folder f : folderList) {
-                            if (f.getTitle().equals(folder.getTitle())) {
-                                f.getChildren().add(newFolder);
-                            }
-                        }
-
-                    }
-
-                   //folderList.add(newFolder);
-
-                    folder.setChildren(null);
-
-                    // convert folderList to json object
-
-                    try {
-                     ObjectMapper mapper = new ObjectMapper();
-                        String json = mapper.writeValueAsString(folderList);
-                        System.out.println("||||json = " + json);
-                    } catch (JsonProcessingException jsonProcessingException) {
-                        jsonProcessingException.printStackTrace();
-                    }
-
-                    // folder.
-                    //folder.getChildren().add(new Folder(name, "file", null));
-                }
-            });*/
         });
         vBox.getChildren().add(btnAdd);
         vBox.getChildren().add(ignore);
@@ -238,45 +210,30 @@ public Accordion accordion;
                 items.add(childFolder.getTitle());
             }
             listView.getItems().addAll(items);
-            /*listView.setOnMouseClicked(e -> {
-                String selectedItem = listView.getSelectionModel().getSelectedItem();
-                if (selectedItem != null) {
-                    System.out.println("XXXXXXselectedItem = " + selectedItem);
-                }
-            *//*if (selectedItem != null) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Item Clicked");
-                alert.setHeaderText(null);
-                alert.setContentText(selectedItem + " was clicked.");
-                alert.showAndWait();
-            }*//*
-            });*/
 
-            listView.setCellFactory(lv -> {
-                ListCell<String> cell = new ListCell<String>() {
-                    @Override
-                    protected void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setText(item);
-                    }
-                };
-                cell.setOnMouseClicked(e -> {
-                    if (!cell.isEmpty()) {
-                        System.out.println("You clicked on " + cell.getItem());
-                        e.consume();
-                    }
-                });
-                return cell;
-            });
-
-            listView.setOnMouseClicked(e -> {
-                System.out.println("You clicked on an empty cell");
-            });
-
-            //listView.setStyle("-fx-background-color: #394b59; -fx-text-fill: #afb8be;");
-            // set list margin  20px
-            vBox.getChildren().add(listView);
         }
+
+        listView.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(item);
+                }
+            };
+            cell.setOnMouseClicked(e -> {
+                if (!cell.isEmpty()) {
+                    System.out.println("You clicked on " + cell.getItem());
+                    e.consume();
+                }
+            });
+            return cell;
+        });
+
+        listView.setOnMouseClicked(e -> {
+            System.out.println("You clicked on an empty cell");
+        });
+        vBox.getChildren().add(listView);
         return new BuildNewTile(titledPane, vBox);
 
     }
