@@ -2,8 +2,11 @@ package africa.jopen.controllers;
 
 
 import africa.jopen.BaseApplication;
-import africa.jopen.TreeViewSample;
+
+import africa.jopen.database.DatabaseManager;
 import africa.jopen.enums.SendingRequestTypes;
+import africa.jopen.models.NavigationEntity;
+import africa.jopen.models.RepositoriesEntity;
 import africa.jopen.utils.HTTPConstants;
 import africa.jopen.utils.Repositorybuilder;
 import africa.jopen.utils.codearea.EverestCodeArea;
@@ -13,6 +16,7 @@ import com.jfoenix.controls.JFXButton;
 import io.github.palexdev.materialfx.font.MFXFontIcon;
 import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -33,6 +37,8 @@ import javafx.util.Duration;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
@@ -69,7 +75,31 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        var j = new Repositorybuilder();
+     //   DatabaseManager.getInstance().saveNewRepository(new RepositoriesEntity(0,"REst API Data"));
+
+
+        ObservableList<RepositoriesEntity> repositoriesEntityObservableList = DatabaseManager.getInstance()
+               .getRepositories();
+
+        RepositoriesEntity repository = repositoriesEntityObservableList.stream().findFirst().get();
+
+        System.out.println("ggg === "+repository.title());
+
+        List<Repositorybuilder.Folder> folderList = new ArrayList<>();
+        repositoriesEntityObservableList.forEach(repositoriesEntity -> {
+            System.out.println("hhhh === "+repository.title());
+          //  folderList.add(new Repositorybuilder.Folder(repositoriesEntity.getName(), repositoriesEntity.getId()));
+
+        });
+
+       /* ObservableList<NavigationEntity> getNavigationsFolders = DatabaseManager.getInstance()
+                .connect().getNavigationsFolders(repositoriesEntityObservableList.get(0).id());
+        getNavigationsFolders.forEach(navigationEntity -> {
+            System.out.println(navigationEntity.title());
+        });*/
+
+
+        var j = new Repositorybuilder(accordioFolders);
         comboBoxSendingType.getItems().setAll(SendingRequestTypes.values());
         Screen screen = Screen.getPrimary();
 
@@ -83,11 +113,10 @@ public class MainController implements Initializable {
         minimizeIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> ((Stage) mainRootAnchorPane.getScene().getWindow()).setIconified(true));
         btnNewFolder.setOnAction(event -> {
             try {
-                j.addFolderToTree(accordioFolders,"New Folder Request");
+                j.addFolderToTree("New Folder Request" ,repository.id());
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
-
 
         });
 
@@ -127,11 +156,11 @@ public class MainController implements Initializable {
         rawInputArea.setHighlighter(HighlighterFactory.getHighlighter(HTTPConstants.JSON));
 
 
-        try {
+       /* try {
             j.generateTree(accordioFolders);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
 
         //  vBoxTree.getChildren().add();

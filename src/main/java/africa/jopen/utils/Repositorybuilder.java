@@ -1,6 +1,8 @@
 package africa.jopen.utils;
 
 
+import africa.jopen.database.DatabaseManager;
+import africa.jopen.models.NavigationEntity;
 import africa.jopen.utils.fxalert.FXAlert;
 import atlantafx.base.theme.Tweaks;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,7 +27,14 @@ import static atlantafx.base.theme.Styles.toggleStyleClass;
 
 public class Repositorybuilder extends Node {
 
+public Accordion accordion;
 
+
+    public Repositorybuilder(Accordion accordion) {
+        this.accordion = accordion;
+        accordion.getPanes().clear();
+        json = "";
+    }
 
     private String json = """
             [
@@ -52,7 +61,9 @@ public class Repositorybuilder extends Node {
     ImageView fileIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/file@32-px.png"), imageSize, imageSize, true, true));
 
 
-    public void generateTree(Accordion accordion) throws JsonProcessingException {
+    public void generateTree() throws JsonProcessingException {
+
+        if(json==null || json.isEmpty()) return;
 
         accordion.getPanes().clear();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -71,14 +82,38 @@ public class Repositorybuilder extends Node {
 
     }
 
-    public void addFolderToTree(Accordion accordion, String folderName) throws JsonProcessingException {
-        accordion.getPanes().clear();
+    public void addFolderToTree( String folderName,int repositoryID) throws JsonProcessingException {
+
+        if( DatabaseManager.getInstance().checkIfNavFolderExists(folderName)){
+            FXAlert.showWarning("Folder already exists");
+            return;
+        }
+
+     //  accordion.getPanes().clear();
         ObjectMapper objectMapper = new ObjectMapper();
-        folderList = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, Folder.class));
+      //  folderList = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, Folder.class));
         Folder newFolder = new Folder();
         newFolder.setTitle(folderName);
         newFolder.setType("folder");
-        newFolder.setChildren(new ArrayList<>());
+        newFolder.setChildren(null);
+        newFolder.setHeaders(null);
+        newFolder.setQuery(null);
+        newFolder.setAuth(null);
+        newFolder.setRequestBodyString(null);
+        newFolder.setUrl(null);
+        newFolder.setRequestType(null);
+        // convert Folder object to json string
+
+        String jsonString =   objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(newFolder);
+        NavigationEntity result = DatabaseManager.getInstance().createNewNavigationFolder(new NavigationEntity(0,repositoryID,folderName, jsonString));
+        newFolder.setNavigationID(result.id());
+
+         jsonString =   objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(newFolder);
+
+        DatabaseManager.getInstance().updateNavigationFolder(new NavigationEntity(result.id(),repositoryID,folderName, jsonString));
+
+        System.out.println("cccccc-jsonString = " + jsonString);
+
         folderList.add(newFolder);
         folderList.stream()
                 .filter(folder -> folder.getType().equals("folder")).map(this::getBuildNewTile)
@@ -108,10 +143,13 @@ public class Repositorybuilder extends Node {
             dialog.setHeaderText("Enter the name of the new request");
             dialog.setContentText("Request Name:");
             dialog.showAndWait().ifPresent(name -> {
-                System.out.println("xx6666666xName: " + name);
+
                 if (name != null) {
                     name = name.trim();
-                    System.out.println("xxxName: " + name);
+                    if (name.isEmpty()) {
+                        FXAlert.showWarning("Empty Name ", "Request name cannot be empty ");
+                        return;
+                    }
                     // remove duplicates from list
                     if (items.contains(name)) {
                         FXAlert.showWarning("Duplicate Found ", "Request name already exists in this folder ");
@@ -249,7 +287,7 @@ public class Repositorybuilder extends Node {
     static record Auth(String type){}
     static record Query(String keyValue){}
     static record Headers(String keyValue){}
-    static class Folder {
+    public static class Folder {
         private int navigationID;
         private String title;
         private String type;
@@ -349,31 +387,100 @@ public class Repositorybuilder extends Node {
         final double imageSize = 24;
         ImageView folderIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/folder@32-px.png"), imageSize, imageSize, true, true));
 
+        /*
+
+          try {
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writeValueAsString(folderList);
+            System.out.println("||||json = " + json);
+        } catch (JsonProcessingException jsonProcessingException) {
+            jsonProcessingException.printStackTrace();
+        }
+          */
+
 
         public EditableTitledPane(String title) {
             super(title, null);
             textField = new TextField(title);
-            textField.setOnAction(event -> {
+            /*textField.setOnAction(event -> {
                 var label = new Label(textField.getText());
                 label.setStyle(style);
                 setText(textField.getText());
-                //  setGraphic(null);
-                //  setContent(null);
                 setGraphic(label);
-            });
+            });*/
             var lable = new Label(title, folderIcon);
             lable.setStyle(style);
             setGraphic(lable);
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
-                    //  setGraphic(null);
-                    //   setContent(null);
                     setGraphic(textField);
                     textField.selectAll();
                     textField.requestFocus();
                 }
             });
+
+
+            textField.setOnKeyReleased(t -> {
+                // listen to the enter key
+                System.out.println("||||bbbb tt = " +t.getCode() );
+                ObjectMapper mapper = new ObjectMapper();
+                if (t.getCode() == KeyCode.ENTER) {
+                    try {
+
+                        String json = mapper.writeValueAsString(folderList);
+                        System.out.println("XXXX|json = " + json);
+                    } catch (JsonProcessingException jsonProcessingException) {
+                        jsonProcessingException.printStackTrace();
+                    }
+                    final String folderName = textField.getText().trim();
+
+                    for (Folder folder1 : folderList) {
+                        if (folder1.getTitle().equals(title)) {
+                            folder1.setTitle(folderName);
+                            try {
+                                String jsonString =   mapper.writerWithDefaultPrettyPrinter().writeValueAsString(folder1);
+                                DatabaseManager.getInstance().updateNavigationFolder(new NavigationEntity(folder1.getNavigationID(),-1,folderName, jsonString));
+                            } catch (JsonProcessingException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            break;
+                        }
+                    }
+
+                    try {
+
+                        String json = mapper.writeValueAsString(folderList);
+                        System.out.println("MMMM|json = " + json);
+                    } catch (JsonProcessingException jsonProcessingException) {
+                        jsonProcessingException.printStackTrace();
+                    }
+
+
+                    var label = new Label(textField.getText());
+                    label.setStyle(style);
+                    setText(textField.getText());
+                    //  setGraphic(null);
+                    //  setContent(null);
+                    setGraphic(label);
+
+                } else if (t.getCode() == KeyCode.ESCAPE) {
+                    // cancelEdit();
+
+
+                    var label = new Label(textField.getText());
+                    label.setStyle(style);
+                    setText(textField.getText());
+                    //  setGraphic(null);
+                    //  setContent(null);
+                    setGraphic(label);
+
+
+                }
+            });
+
+
         }
     }
 

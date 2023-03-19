@@ -1,12 +1,16 @@
 package africa.jopen.database;
 
+import africa.jopen.models.NavigationEntity;
+import africa.jopen.models.RepositoriesEntity;
 import africa.jopen.utils.XUtils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class DatabaseManager {
     private Connection connection;
@@ -46,6 +50,153 @@ public class DatabaseManager {
         return  this;
     }
 
+    public boolean checkIfNavFolderExists(String title){
+        try {
+            PreparedStatement stmt = connection.prepareStatement("""
+                    SELECT * FROM navigation WHERE title=?
+                    """);
+            stmt.setString(1,title);
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+            stmt.closeOnCompletion();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public NavigationEntity createNewNavigationFolder (NavigationEntity navigationEntity){
+        try {
+        PreparedStatement stmt = connection.prepareStatement("""
+                INSERT INTO navigation(repositoriesID,title,folderStructures) VALUES(?,?,?)
+                """);
+        stmt.setInt(1,navigationEntity.repositoriesID());
+            stmt.setString(2,navigationEntity.title());
+            stmt.setString(3,navigationEntity.folderStructures());
+        stmt.executeUpdate();
+        stmt.closeOnCompletion();
+            Optional<NavigationEntity> navigationEntity1 = getNavigationsFolders(0, navigationEntity.title()).stream().findFirst();
+
+
+            return navigationEntity1.orElse(null);
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
+    public void updateNavigationFolder( NavigationEntity navigationEntity){
+        try {
+        PreparedStatement stmt = connection.prepareStatement("""
+                UPDATE navigation SET title=?,folderStructures=? WHERE id=?
+                """);
+        stmt.setString(1,navigationEntity.title());
+        stmt.setString(2,navigationEntity.folderStructures());
+        stmt.setInt(3,navigationEntity.id());
+        stmt.executeUpdate();
+        stmt.closeOnCompletion();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ObservableList<NavigationEntity> getNavigationsFolders( int repositoriesID,String title){
+        try {
+            PreparedStatement stmt;
+            if(repositoriesID > 0) {
+                 stmt = connection.prepareStatement("""
+                    SELECT * FROM navigation WHERE repositoriesID=?
+                    """);
+                stmt.setInt(1,repositoriesID);
+            }else {
+                 stmt = connection.prepareStatement("""
+                    SELECT * FROM navigation WHERE title=?
+                    """);
+                stmt.setString(1,title);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            ObservableList<NavigationEntity> navigations = FXCollections.observableArrayList();
+            while (rs.next()){
+                navigations.add(new NavigationEntity(rs.getInt("id"),rs.getInt("repositoriesID"),rs.getString("title") ,rs.getString("folderStructures") ));
+            }
+            stmt.closeOnCompletion();
+            return navigations;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return FXCollections.emptyObservableList();
+    }
+
+
+
+    public void saveNewRepository(RepositoriesEntity repositoriesEntity){
+        try {
+            PreparedStatement stmt = connection.prepareStatement("""
+                    INSERT INTO repositories(title) VALUES(?)
+                    """);
+            stmt.setString(1,repositoriesEntity.title());
+            stmt.executeUpdate();
+            stmt.closeOnCompletion();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateRepository(RepositoriesEntity repositoriesEntity){
+        try {
+            PreparedStatement stmt = connection.prepareStatement("""
+                    UPDATE repositories SET title=? WHERE id=?
+                    """);
+            stmt.setString(1,repositoriesEntity.title());
+            stmt.setInt(2,repositoriesEntity.id());
+            stmt.executeUpdate();
+            stmt.closeOnCompletion();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteRepository(RepositoriesEntity repositoriesEntity){
+        try {
+            PreparedStatement stmt = connection.prepareStatement("""
+                    DELETE FROM repositories WHERE id=?
+                    """);
+            stmt.setInt(1,repositoriesEntity.id());
+            stmt.executeUpdate();
+            stmt.closeOnCompletion();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ObservableList<RepositoriesEntity> getRepositories(){
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement("""
+                    SELECT * FROM repositories
+                    """);
+            ResultSet rs = stmt.executeQuery();
+            ObservableList<RepositoriesEntity> repositories = FXCollections.observableArrayList();
+            System.out.println("Repositories" + rs.getFetchSize());
+            while (rs.next()){
+                repositories.add(new RepositoriesEntity(rs.getInt("id"),rs.getString("title")));
+            }
+            stmt.closeOnCompletion();
+            return repositories;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        return  FXCollections.emptyObservableList();
+    }
+
     public DatabaseManager createTables(){
         try {
             String queryRepositories = """
@@ -58,6 +209,7 @@ public class DatabaseManager {
                     CREATE TABLE IF NOT EXISTS navigation(
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     repositoriesID INTEGER,
+                    title TEXT,
                     folderStructures TEXT,
                         FOREIGN KEY (repositoriesID) REFERENCES repositories(id)
                     );

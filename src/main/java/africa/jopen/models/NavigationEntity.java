@@ -1,4 +1,4 @@
 package africa.jopen.models;
 
-public record NavigationEntity (int id ,int repositoriesID ,String folderStructures) {
+public record NavigationEntity (int id ,int repositoriesID,String title ,String folderStructures) {
 }
