@@ -9,31 +9,31 @@ import africa.jopen.utils.Repositorybuilder;
 import africa.jopen.utils.codearea.EverestCodeArea;
 import africa.jopen.utils.codearea.highlighters.HighlighterFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.jfoenix.controls.JFXButton;
 import io.github.palexdev.materialfx.font.MFXFontIcon;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeView;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -63,11 +63,13 @@ public class MainController implements Initializable {
 
     @FXML
     private MFXFontIcon minimizeIcon;
+    @FXML
+    private JFXButton btnNewFolder;
     private EverestCodeArea rawInputArea;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        var j = new Repositorybuilder();
         comboBoxSendingType.getItems().setAll(SendingRequestTypes.values());
         Screen screen = Screen.getPrimary();
 
@@ -79,7 +81,15 @@ public class MainController implements Initializable {
         closeIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> Platform.exit());
 
         minimizeIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> ((Stage) mainRootAnchorPane.getScene().getWindow()).setIconified(true));
+        btnNewFolder.setOnAction(event -> {
+            try {
+                j.addFolderToTree(accordioFolders,"New Folder Request");
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
 
+
+        });
 
         imgBtnFullScreen.setOnMouseClicked(e -> {
             // Stage stage = currentStage();
@@ -108,8 +118,6 @@ public class MainController implements Initializable {
         rawInputArea.setMaxHeight(Double.MAX_VALUE);
         rawInputArea.setPrefHeight(codearePane.getPrefHeight());
         rawInputArea.setPrefWidth(codearePane.getPrefWidth());
-
-
         codearePane.getChildren().add(new VirtualizedScrollPane<>(rawInputArea));
 
         rawInputArea.prefWidthProperty().bind(codearePane.widthProperty());
@@ -118,18 +126,6 @@ public class MainController implements Initializable {
 
         rawInputArea.setHighlighter(HighlighterFactory.getHighlighter(HTTPConstants.JSON));
 
-        var j = new Repositorybuilder();
-       /* TreeView<String> treeView = new TreeView<String>(j.generateTree());
-        TreeView<String> treeView = new TreeView<String>(j.generateTree());*/
-      /*  treeView.setRoot(j.generateTree());
-        treeView.setEditable(true);*/
-
-       /* treeView.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>(){
-            @Override
-            public TreeCell<String> call(TreeView<String> p) {
-                return new Repositorybuilder.TextFieldTreeCellImpl();
-            }
-        });*/
 
         try {
             j.generateTree(accordioFolders);
@@ -148,7 +144,6 @@ public class MainController implements Initializable {
     public void sendRequest() {
 
     }
-
     private Stage currentStage() {
         return (Stage) mainRootAnchorPane.getScene().getWindow();
     }

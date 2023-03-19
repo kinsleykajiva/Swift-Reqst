@@ -162,7 +162,7 @@
                <children>
                   <VBox fx:id="vBoxTree" alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <JFXButton buttonType="RAISED" prefHeight="31.0" prefWidth="201.0" style="-fx-background-color: #394b59; -fx-text-fill: #afb8be;" text="Add New Folder" textFill="#f3f3f3" VBox.vgrow="ALWAYS">
+                        <JFXButton fx:id="btnNewFolder" buttonType="RAISED" prefHeight="31.0" prefWidth="201.0" style="-fx-background-color: #394b59; -fx-text-fill: #afb8be;" text="Add New Folder" textFill="#f3f3f3" VBox.vgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="23.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -178,7 +178,7 @@
                           <panes>
                             <TitledPane animated="false" text="untitled 1">
                                  <content>
-                                    <VBox>
+                                    <VBox style="-fx-background-color: #afb8be;">
                                        <children>
                                           <Label text=" sdfsdf ds dfs" />
                                           <ListView prefHeight="200.0" prefWidth="200.0" />

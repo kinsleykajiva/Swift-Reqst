@@ -1,10 +1,13 @@
 package africa.jopen.utils;
 
 
+import africa.jopen.utils.fxalert.FXAlert;
 import atlantafx.base.theme.Tweaks;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jfoenix.controls.JFXButton;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -12,34 +15,22 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static atlantafx.base.theme.Styles.DENSE;
 import static atlantafx.base.theme.Styles.toggleStyleClass;
 
 public class Repositorybuilder extends Node {
 
-    public record Structure(String title, String type, List<Structure> children) {
-        public TreeItem<String> toTreeItem() {
-            TreeItem<String> treeItem = new TreeItem<>(title);
-            if ("folder".equals(type) && children != null) {
-                for (Structure child : children) {
-                    treeItem.getChildren().add(child.toTreeItem());
-                }
-            }
-            return treeItem;
-        }
-    }
 
 
-    private String json= """
+    private String json = """
             [
-            {"title" : "Companies Folder"  ,"type":"folder" , "children":[          
-            {"title" : "3FileYYYY" ,"type":"file" , "children":null}
+            {"title" : "Companies Folder"  ,"type":"folder" , "url":"" , "requestType":"", "requestBodyString":"" ,"auth":null , "query":"" , "headers":[], "children":[          
+            {"title" : "3FileYYYY" ,"type":"file" ,"url":"" , "requestType":"", "requestBodyString":"" ,"auth":{"type":"token"} , "query":[{"k":"v"}] , "headers":[{"k":"v"}], "children":null}
             ]} ,
             {"title" : "Accounting Folder"  ,"type":"folder" , "children":[]} ,
             {"title" : "Clients Folder" ,"type":"folder" , "children":[]} ,
@@ -55,72 +46,276 @@ public class Repositorybuilder extends Node {
             {"title" : "Users Folder"  ,"type":"folder" , "children":[] }         
             ]
             """;
+    List<Folder> folderList = new ArrayList<>();
+    final double imageSize = 24;
+    ImageView folderIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/folder@32-px.png"), imageSize, imageSize, true, true));
+    ImageView fileIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/file@32-px.png"), imageSize, imageSize, true, true));
 
-    final double  imageSize =24;
-    ImageView folderIcon = new ImageView(new Image( getClass().getResourceAsStream("/images/folder@32-px.png"),imageSize ,imageSize ,true,true ));
-    ImageView fileIcon = new ImageView(new Image( getClass().getResourceAsStream("/images/file@32-px.png"),imageSize ,imageSize ,true,true ));
-    TreeItem<String> rootNode =new TreeItem<>("Root", folderIcon);
 
-    public Accordion  generateTree(Accordion accordion ) throws JsonProcessingException {
+    public void generateTree(Accordion accordion) throws JsonProcessingException {
 
         accordion.getPanes().clear();
         ObjectMapper objectMapper = new ObjectMapper();
-        Folder[] folders = objectMapper.readValue(json, Folder[].class);
-        for (Folder folder : folders) {
+        objectMapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //  Folder[] folders = objectMapper.readValue(json, Folder[].class);
+        folderList = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, Folder.class));
+
+        for (Folder folder : folderList) {
             if (folder.getType().equals("folder")) {
-                TitledPane titledPane = new TitledPane();
-                titledPane.setText(folder.getTitle());
-                VBox vBox = new VBox();
-                JFXButton btnAdd = new JFXButton("Add New Request");
-                Label ignore = new Label("-");
-                // add styling using inlined css
-                btnAdd.setStyle("-fx-background-color: #394b59; -fx-text-fill: #afb8be;");
-
-                btnAdd.getStyleClass().add("button-raised");
-
-                btnAdd.setOnAction(e -> {
-
-                });
-                vBox.getChildren().add(btnAdd);
-                vBox.getChildren().add(ignore);
-                ListView<String> listView = new ListView<>();
-
-
-
-                if (folder.getChildren() != null) {
-                    for (Folder childFolder : folder.getChildren()) {
-                        listView.getItems().add(childFolder.getTitle());
-                    }
-                    listView.setOnMouseClicked(e -> {
-                        String selectedItem = listView.getSelectionModel().getSelectedItem();
-                    /*if (selectedItem != null) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Item Clicked");
-                        alert.setHeaderText(null);
-                        alert.setContentText(selectedItem + " was clicked.");
-                        alert.showAndWait();
-                    }*/
-                    });
-
-                    //listView.setStyle("-fx-background-color: #394b59; -fx-text-fill: #afb8be;");
-                    // set list margin  20px
-                    vBox.getChildren().add(listView);
-                }
-
-                titledPane.setContent(vBox);
-                accordion.getPanes().add(titledPane);
+                BuildNewTile tiles = getBuildNewTile(folder);
+                tiles.titledPane().setContent(tiles.vBox());
+                accordion.getPanes().add(tiles.titledPane());
             }
         }
-
         accordion.getPanes().forEach(p -> toggleStyleClass(p, Tweaks.ALT_ICON));
-      //  accordion.getPanes().forEach(p -> toggleStyleClass(p, DENSE));
-      return accordion;
+
     }
 
+    public void addFolderToTree(Accordion accordion, String folderName) throws JsonProcessingException {
+        accordion.getPanes().clear();
+        ObjectMapper objectMapper = new ObjectMapper();
+        folderList = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, Folder.class));
+        Folder newFolder = new Folder();
+        newFolder.setTitle(folderName);
+        newFolder.setType("folder");
+        newFolder.setChildren(new ArrayList<>());
+        folderList.add(newFolder);
+        folderList.stream()
+                .filter(folder -> folder.getType().equals("folder")).map(this::getBuildNewTile)
+                .forEach(tiles -> {
+                    tiles.titledPane().setContent(tiles.vBox());
+                    accordion.getPanes().add(tiles.titledPane());
+                });
+        accordion.getPanes().forEach(p -> toggleStyleClass(p, Tweaks.ALT_ICON));
+
+    }
+
+    @NotNull
+    private BuildNewTile getBuildNewTile(Folder folder) {
+        EditableTitledPane titledPane = new EditableTitledPane(folder.getTitle());
+        ObservableList<String> items = FXCollections.observableArrayList();
+        titledPane.setStyle("-fx-background-color: #394b59;-fx-text-fill: white;");
+        ListView<String> listView = new ListView<>();
+        VBox vBox = new VBox();
+        JFXButton btnAdd = new JFXButton("Add New Request");
+        Label ignore = new Label("-");
+        // add styling using inlined css
+        btnAdd.setStyle("-fx-background-color: #394b59; -fx-text-fill: #afb8be;");
+        btnAdd.getStyleClass().add("button-raised");
+        btnAdd.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog("New Request");
+            dialog.setTitle("New Request");
+            dialog.setHeaderText("Enter the name of the new request");
+            dialog.setContentText("Request Name:");
+            dialog.showAndWait().ifPresent(name -> {
+                System.out.println("xx6666666xName: " + name);
+                if (name != null) {
+                    name = name.trim();
+                    System.out.println("xxxName: " + name);
+                    // remove duplicates from list
+                    if (items.contains(name)) {
+                        FXAlert.showWarning("Duplicate Found ", "Request name already exists in this folder ");
+                        return;
+                    }
+                    //  items.remove(name);
+                    items.add(name);
+                    listView.getItems().add(name);
+
+                    // find the corresponding folder in folderList
+                    for (Folder folder1 : folderList) {
+                        if (folder1.getTitle().equals(titledPane.getText())) {
+                            // create new child folder and add it to the children list
+                            Folder newChild = new Folder();
+                            newChild.setTitle(name);
+                            newChild.setType("file");
+                            newChild.setChildren(null);
+                            folder1.getChildren().add(newChild);
+                            break;
+                        }
+                    }
+
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+                        String json = mapper.writeValueAsString(folderList);
+                        System.out.println("||||json = " + json);
+                    } catch (JsonProcessingException jsonProcessingException) {
+                        jsonProcessingException.printStackTrace();
+                    }
+                }
+            });
+           /* dialog.showAndWait().ifPresent(name -> {
+                System.out.println("xx6666666xName: " + name);
+                if (name != null) {
+                    name = name.trim();
+                    System.out.println("xxxName: " + name);
+                    // remove duplicates from list
+                    if (items.contains(name)) {
+                        FXAlert.showWarning("Duplicate Found ", "Request name already exists in this folder ");
+                        return;
+                    }
+                    //  items.remove(name);
+                    items.add(name);
+                    listView.getItems().add(name);
+
+                    Folder newFolder = new Folder();
+                    newFolder.setTitle(name);
+                    newFolder.setType("file");
+                    newFolder.setChildren(null);
+
+                   // folderList.remove(newFolder);
+                    if(folder.getChildren() == null) {
+                        for (Folder f : folderList) {
+                            if (f.getTitle().equals(folder.getTitle())) {
+                                f.getChildren().add(newFolder);
+                            }
+                        }
+
+                    }
+
+                   //folderList.add(newFolder);
+
+                    folder.setChildren(null);
+
+                    // convert folderList to json object
+
+                    try {
+                     ObjectMapper mapper = new ObjectMapper();
+                        String json = mapper.writeValueAsString(folderList);
+                        System.out.println("||||json = " + json);
+                    } catch (JsonProcessingException jsonProcessingException) {
+                        jsonProcessingException.printStackTrace();
+                    }
+
+                    // folder.
+                    //folder.getChildren().add(new Folder(name, "file", null));
+                }
+            });*/
+        });
+        vBox.getChildren().add(btnAdd);
+        vBox.getChildren().add(ignore);
+
+
+        if (folder.getChildren() != null) {
+            for (Folder childFolder : folder.getChildren()) {
+                items.add(childFolder.getTitle());
+            }
+            listView.getItems().addAll(items);
+            /*listView.setOnMouseClicked(e -> {
+                String selectedItem = listView.getSelectionModel().getSelectedItem();
+                if (selectedItem != null) {
+                    System.out.println("XXXXXXselectedItem = " + selectedItem);
+                }
+            *//*if (selectedItem != null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Item Clicked");
+                alert.setHeaderText(null);
+                alert.setContentText(selectedItem + " was clicked.");
+                alert.showAndWait();
+            }*//*
+            });*/
+
+            listView.setCellFactory(lv -> {
+                ListCell<String> cell = new ListCell<String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(item);
+                    }
+                };
+                cell.setOnMouseClicked(e -> {
+                    if (!cell.isEmpty()) {
+                        System.out.println("You clicked on " + cell.getItem());
+                        e.consume();
+                    }
+                });
+                return cell;
+            });
+
+            listView.setOnMouseClicked(e -> {
+                System.out.println("You clicked on an empty cell");
+            });
+
+            //listView.setStyle("-fx-background-color: #394b59; -fx-text-fill: #afb8be;");
+            // set list margin  20px
+            vBox.getChildren().add(listView);
+        }
+        return new BuildNewTile(titledPane, vBox);
+
+    }
+
+    private record BuildNewTile(EditableTitledPane titledPane, VBox vBox) {
+    }
+
+    static record Auth(String type){}
+    static record Query(String keyValue){}
+    static record Headers(String keyValue){}
     static class Folder {
+        private int navigationID;
         private String title;
         private String type;
-        private Folder[] children;
+        private String url;
+        private String requestType;
+        private String requestBodyString;
+        private Auth auth;
+        private List<Query> query;
+        private List<Headers> headers;
+        private List<Folder> children;
+
+        public int getNavigationID() {
+            return navigationID;
+        }
+
+        public void setNavigationID(int navigationID) {
+            this.navigationID = navigationID;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getRequestType() {
+            return requestType;
+        }
+
+        public void setRequestType(String requestType) {
+            this.requestType = requestType;
+        }
+
+        public String getRequestBodyString() {
+            return requestBodyString;
+        }
+
+        public void setRequestBodyString(String requestBodyString) {
+            this.requestBodyString = requestBodyString;
+        }
+
+        public Auth getAuth() {
+            return auth;
+        }
+
+        public void setAuth(Auth auth) {
+            this.auth = auth;
+        }
+
+        public List<Query> getQuery() {
+            return query;
+        }
+
+        public void setQuery(List<Query> query) {
+            this.query = query;
+        }
+
+        public List<Headers> getHeaders() {
+            return headers;
+        }
+
+        public void setHeaders(List<Headers> headers) {
+            this.headers = headers;
+        }
 
         public String getTitle() {
             return title;
@@ -138,23 +333,55 @@ public class Repositorybuilder extends Node {
             this.type = type;
         }
 
-        public Folder[] getChildren() {
+        public List<Folder> getChildren() {
             return children;
         }
 
-        public void setChildren(Folder[] children) {
+        public void setChildren(List<Folder> children) {
             this.children = children;
         }
     }
 
+    public class EditableTitledPane extends TitledPane {
+
+        private TextField textField;
+        final String style = "-fx-text-fill: white;";
+        final double imageSize = 24;
+        ImageView folderIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/folder@32-px.png"), imageSize, imageSize, true, true));
 
 
+        public EditableTitledPane(String title) {
+            super(title, null);
+            textField = new TextField(title);
+            textField.setOnAction(event -> {
+                var label = new Label(textField.getText());
+                label.setStyle(style);
+                setText(textField.getText());
+                //  setGraphic(null);
+                //  setContent(null);
+                setGraphic(label);
+            });
+            var lable = new Label(title, folderIcon);
+            lable.setStyle(style);
+            setGraphic(lable);
+            setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    //  setGraphic(null);
+                    //   setContent(null);
+                    setGraphic(textField);
+                    textField.selectAll();
+                    textField.requestFocus();
+                }
+            });
+        }
+    }
 
 
     public static final class TextFieldTreeCellImpl extends TreeCell<String> {
-        final double  imageSize =24;
-        ImageView folderIcon = new ImageView(new Image( getClass().getResourceAsStream("/images/folder@32-px.png"),imageSize ,imageSize ,true,true ));
-        ImageView fileIcon = new ImageView(new Image( getClass().getResourceAsStream("/images/file@32-px.png"),imageSize ,imageSize ,true,true ));
+        final double imageSize = 24;
+        ImageView folderIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/folder@32-px.png"), imageSize, imageSize, true, true));
+        ImageView fileIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/file@32-px.png"), imageSize, imageSize, true, true));
         private TextField textField;
         private ContextMenu addFolderMenu = new ContextMenu();
         private ContextMenu addFileMenu = new ContextMenu();
@@ -164,7 +391,7 @@ public class Repositorybuilder extends Node {
             addFolderMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent t) {
                     TreeItem<String> newFolder =
-                            new TreeItem<>("New Folder", folderIcon   );
+                            new TreeItem<>("New Folder", folderIcon);
                     getTreeItem().getChildren().add(newFolder);
                     newFolder.setExpanded(true);
                 }
@@ -174,7 +401,7 @@ public class Repositorybuilder extends Node {
             addFileMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent t) {
                     TreeItem<String> newFile =
-                            new TreeItem<>("New File", fileIcon  );
+                            new TreeItem<>("New File", fileIcon);
                     getTreeItem().getChildren().add(newFile);
                 }
             });
@@ -190,7 +417,7 @@ public class Repositorybuilder extends Node {
                 }
             });
 
-            addFolderMenu.getItems().addAll(addFolderMenuItem, addFileMenuItem ,deleteFileMenuItem);
+            addFolderMenu.getItems().addAll(addFolderMenuItem, addFileMenuItem, deleteFileMenuItem);
             addFileMenu.getItems().addAll(deleteFileMenuItem);
         }
 
@@ -234,7 +461,7 @@ public class Repositorybuilder extends Node {
                     setGraphic(getTreeItem().getGraphic());
                     if (!getTreeItem().isLeaf() /*&& getTreeItem().getParent() != null*/) {
                         setContextMenu(addFolderMenu);
-                    }else{
+                    } else {
                         setContextMenu(addFileMenu);
                     }
                 }
