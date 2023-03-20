@@ -108,7 +108,24 @@ public class MainController implements Initializable {
         double screenHeight = bounds.getHeight();
 
 
-        closeIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> Platform.exit());
+        closeIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+
+            Platform.exit();
+
+
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            System.out.println("System exiting..");
+                            System.exit(0);
+
+                        }
+                    },
+                    3_000
+            );
+
+        });
 
         minimizeIcon.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> ((Stage) mainRootAnchorPane.getScene().getWindow()).setIconified(true));
         btnNewFolder.setOnAction(event -> {

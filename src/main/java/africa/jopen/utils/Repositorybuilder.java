@@ -72,8 +72,9 @@ public Accordion accordion;
 
             try {
                 System.out.println("TTTT-f = " + f.folderStructures());
-                List<Folder>   allfolders = objectMapper.readValue(f.folderStructures(), objectMapper.getTypeFactory().constructCollectionType(List.class, Folder.class));
-                folderList.addAll(allfolders);
+                Folder allfolders = objectMapper.readValue(f.folderStructures(),  Folder.class);
+               // List<Folder>   allfolders = objectMapper.readValue(f.folderStructures(), objectMapper.getTypeFactory().constructCollectionType(List.class, Folder.class));
+                folderList.add(allfolders);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
@@ -185,6 +186,7 @@ public Accordion accordion;
                         folder1.getChildren().add(newChild);
                         for (Folder childFolder : folder1.getChildren()) {
                             if(!items.contains(childFolder.getTitle())){
+                                childFolder.setNavigationID(folder1.getNavigationID());
                                 items.add(childFolder.getTitle());
 
                                 try {
@@ -216,10 +218,7 @@ public Accordion accordion;
 
 
         if (folder.getChildren() != null) {
-            for (Folder childFolder : folder.getChildren()) {
-                items.add(childFolder.getTitle());
-            }
-            listView.getItems().addAll(items);
+            folder.getChildren().stream().map(Folder::getTitle).forEach(items::add);
 
         }
 
