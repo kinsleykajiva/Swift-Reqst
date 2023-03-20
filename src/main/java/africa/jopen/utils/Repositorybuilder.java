@@ -61,15 +61,30 @@ public Accordion accordion;
     ImageView fileIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/file@32-px.png"), imageSize, imageSize, true, true));
 
 
-    public void generateTree() throws JsonProcessingException {
+    public void generateTree(int repositoriesID) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+       // if(json==null || json.isEmpty()) return;
 
-        if(json==null || json.isEmpty()) return;
+        System.out.println("TTTT-repositoriesID = " + repositoriesID);
+
+        ObservableList<NavigationEntity> folderss=  DatabaseManager.getInstance().getNavigationsFolders(repositoriesID ,null);
+        folderss.forEach(f->{
+
+            try {
+                System.out.println("TTTT-f = " + f.folderStructures());
+                List<Folder>   allfolders = objectMapper.readValue(f.folderStructures(), objectMapper.getTypeFactory().constructCollectionType(List.class, Folder.class));
+                folderList.addAll(allfolders);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         accordion.getPanes().clear();
-        ObjectMapper objectMapper = new ObjectMapper();
+
         objectMapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         //  Folder[] folders = objectMapper.readValue(json, Folder[].class);
-        folderList = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, Folder.class));
+       // folderList = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, Folder.class));
+      ///  folderList = objectMapper.readValue(folderss, objectMapper.getTypeFactory().constructCollectionType(List.class, Folder.class));
 
         for (Folder folder : folderList) {
             if (folder.getType().equals("folder")) {
@@ -89,7 +104,6 @@ public Accordion accordion;
             return;
         }
 
-     //  accordion.getPanes().clear();
         ObjectMapper objectMapper = new ObjectMapper();
       //  folderList = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, Folder.class));
         Folder newFolder = new Folder();
@@ -156,9 +170,6 @@ public Accordion accordion;
                     return;
                 }
                 ObjectMapper mapper = new ObjectMapper();
-                //  items.remove(name);
-                /*items.add(name);
-                listView.getItems().setAll(items);*/
 
                 // find the corresponding folder in folderList
                 for (Folder folder1 : folderList) {
@@ -185,9 +196,8 @@ public Accordion accordion;
                                     throw new RuntimeException(e1);
                                 }
                             }
-
                         }
-                        //listView.getItems().addAll(items);
+
                         break;
                     }
                 }
@@ -344,27 +354,10 @@ public Accordion accordion;
         final double imageSize = 24;
         ImageView folderIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/folder@32-px.png"), imageSize, imageSize, true, true));
 
-        /*
-
-          try {
-            ObjectMapper mapper = new ObjectMapper();
-            String json = mapper.writeValueAsString(folderList);
-            System.out.println("||||json = " + json);
-        } catch (JsonProcessingException jsonProcessingException) {
-            jsonProcessingException.printStackTrace();
-        }
-          */
-
 
         public EditableTitledPane(String title) {
             super(title, null);
             textField = new TextField(title);
-            /*textField.setOnAction(event -> {
-                var label = new Label(textField.getText());
-                label.setStyle(style);
-                setText(textField.getText());
-                setGraphic(label);
-            });*/
             var lable = new Label(title, folderIcon);
             lable.setStyle(style);
             setGraphic(lable);
@@ -415,18 +408,17 @@ public Accordion accordion;
                     }
 
 
-                    var label = new Label(textField.getText());
+                    var label = new Label(textField.getText() ,folderIcon);
                     label.setStyle(style);
                     setText(textField.getText());
-                    //  setGraphic(null);
-                    //  setContent(null);
+
                     setGraphic(label);
 
                 } else if (t.getCode() == KeyCode.ESCAPE) {
                     // cancelEdit();
 
 
-                    var label = new Label(textField.getText());
+                    var label = new Label(textField.getText(),folderIcon);
                     label.setStyle(style);
                     setText(textField.getText());
                     //  setGraphic(null);

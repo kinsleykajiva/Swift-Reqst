@@ -120,6 +120,15 @@ public class MainController implements Initializable {
 
         });
 
+
+        try {
+            j.generateTree(repository.id());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
         imgBtnFullScreen.setOnMouseClicked(e -> {
             // Stage stage = currentStage();
            /* stage.setX(0);
@@ -156,11 +165,7 @@ public class MainController implements Initializable {
         rawInputArea.setHighlighter(HighlighterFactory.getHighlighter(HTTPConstants.JSON));
 
 
-       /* try {
-            j.generateTree(accordioFolders);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }*/
+
 
 
         //  vBoxTree.getChildren().add();
