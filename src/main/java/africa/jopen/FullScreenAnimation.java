@@ -1,5 +1,10 @@
 package africa.jopen;
 
+import africa.jopen.utils.JacksonPOJOGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
@@ -9,6 +14,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.Screen;
+
+import java.io.File;
+import java.io.IOException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.io.IOException;
+import java.util.Iterator;
 public class FullScreenAnimation extends Application {
 
     private AnimationTimer animationTimer;
@@ -72,8 +86,36 @@ public class FullScreenAnimation extends Application {
         });*/
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    public void main(String[] args) throws IOException {
+     //   launch(args);
+
+       /* String jsonString = "{\"name\":\"John\",\"age\":30,\"email\":\"john@example.com\"}";
+        String className = "Person";
+        String packageName = "com.example";
+        String outputPath = "/path/to/output/directory";
+        JacksonPOJOGenerator.generatePOJOClassFromJSONString(jsonString, className, packageName, outputPath);
+
+
+
+
+        String json = "{ \"name\": \"John\", \"age\": 30, \"address\": { \"street\": \"123 Main St\", \"city\": \"Anytown\" } }";
+        ObjectMapper mapper = new ObjectMapper();
+        Object jsonObject = mapper.readValue(json, Object.class);
+
+        // Step 2: Generate the Java POJO classes
+        TypeFactory typeFactory = mapper.getTypeFactory();
+        Class<?> pojoClass = typeFactory.constructType(jsonObject.getClass()).getRawClass();
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true));
+        System.out.println(" pojoClass.getSimpleName()  " + pojoClass.getSimpleName());
+        mapper.writerWithDefaultPrettyPrinter().writeValue(new File(pojoClass.getSimpleName() + "xxxxxxx.java"), jsonObject);
+
+        System.out.println("Java POJO classes generated successfully!");*/
+
+
+
     }
+
+
 }
 

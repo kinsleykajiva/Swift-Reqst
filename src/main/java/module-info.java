@@ -15,6 +15,9 @@ module africa.jopen {
     requires atlantafx.base;
     requires MaterialFX;
     requires org.jetbrains.annotations;
+    requires okhttp3;
+    requires javafx.web;
+    requires com.google.common;
     exports africa.jopen to javafx.graphics;
     exports africa.jopen.models to com.fasterxml.jackson.databind;
     exports africa.jopen.utils to com.fasterxml.jackson.databind;

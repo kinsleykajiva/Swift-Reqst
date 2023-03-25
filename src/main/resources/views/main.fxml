@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXProgressBar?>
+<?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
 <?import io.github.palexdev.materialfx.font.MFXFontIcon?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
@@ -22,10 +24,11 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
 
 <AnchorPane fx:id="mainRootAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1380.0" style="-fx-background-color: #293742;" stylesheets="@../css/Common.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="africa.jopen.controllers.MainController">
    <children>
-      <AnchorPane layoutY="45.0" style="-fx-background-color: #394b59;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="45.0">
+      <AnchorPane layoutY="45.0" prefHeight="755.0" prefWidth="45.0" style="-fx-background-color: #394b59;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="45.0">
          <children>
             <ImageView fitHeight="21.0" fitWidth="30.0" layoutX="11.0" layoutY="646.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="23.0">
                <image>
@@ -41,7 +44,7 @@
       </AnchorPane>
       <AnchorPane prefHeight="46.0" prefWidth="1280.0" style="-fx-background-color: #000;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="285.0" spacing="10.0" style="-fx-background-color: #394b59;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="312.0" spacing="10.0" style="-fx-background-color: #394b59;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Label text="Swift Reqst" textFill="#eeeeee">
                      <font>
@@ -54,12 +57,20 @@
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin></TextField>
+                  <MFXProgressSpinner fx:id="SystemSpinnerLoader" prefHeight="30.0" prefWidth="25.0">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <padding>
+                        <Insets right="6.0" />
+                     </padding>
+                  </MFXProgressSpinner>
                </children>
                <padding>
                   <Insets left="2.0" />
                </padding>
             </HBox>
-            <HBox fx:id="windowHeader" alignment="CENTER_RIGHT" layoutX="286.0" layoutY="1.0" prefHeight="45.0" prefWidth="995.0" spacing="10.0" style="-fx-background-color: #394b59;" AnchorPane.leftAnchor="286.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
+            <HBox fx:id="windowHeader" alignment="CENTER_RIGHT" layoutX="313.0" layoutY="1.0" prefHeight="45.0" prefWidth="1068.0" spacing="10.0" style="-fx-background-color: #394b59;" AnchorPane.leftAnchor="313.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
                <padding>
                   <Insets right="10.0" />
                </padding>
@@ -265,7 +276,14 @@
                             </Tab>
                               <Tab text="Query Params">
                                  <content>
-                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox fx:id="fieldsBox" alignment="TOP_CENTER" prefHeight="646.0" prefWidth="504.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <fx:include source="StringKeyValueField.fxml" />
+                                             </children>
+                                          </VBox>
+                                       </children></AnchorPane>
                                  </content>
                               </Tab>
                               <Tab text="Headers">
@@ -282,7 +300,11 @@
                   </AnchorPane>
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #293742;" />
+            <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #293742;">
+               <children>
+                  <MFXProgressBar id="customBar1" fx:id="progressBar" layoutX="1.0" prefHeight="4.0" prefWidth="535.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" />
+                  <WebView fx:id="webView" layoutY="8.0" prefHeight="742.0" prefWidth="534.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="8.0" />
+               </children></AnchorPane>
         </items>
       </SplitPane>
    </children>

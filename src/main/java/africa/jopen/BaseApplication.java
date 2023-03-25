@@ -53,7 +53,7 @@ public class BaseApplication extends Application {
 
         XUtils.loadSystem();
 
-        System.out.printf("xxxxxThe User Home Directory is %s", XUtils.PARENT_FOLDER.get());
+       // System.out.printf("xxxxxThe User Home Directory is %s", XUtils.PARENT_FOLDER.get());
         new PropertiesDb(false).updateProperty("test", "test11");
 
         DatabaseManager.getInstance()
@@ -64,6 +64,7 @@ public class BaseApplication extends Application {
             scene = new Scene(root, null);
             primaryStage.setScene(scene);
             primaryStage.initStyle(StageStyle.TRANSPARENT);
+            primaryStage.setTitle("Swift Reqst");
             primaryStage.setFullScreenExitHint("");
             primaryStage.getIcons().add(new Image(getClass().getResource("/images/app-icon@24-px.png").toExternalForm()));
 

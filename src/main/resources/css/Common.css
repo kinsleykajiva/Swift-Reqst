@@ -9,13 +9,11 @@
 
 *{
     /*-fx-font-family: 'Visby Round CF Heavy';*/
-    -mfx-blue: #2196f3;
+
     -mfx-charcoal: #445055;
-    -mfx-green: #4caf50;
     -mfx-onyx: #353935;
     -mfx-orange: #ff9800;
-    -mfx-purple: #7a0ed9;
-    -mfx-red: #EF6E6B;
+
     -mfx-yellow: #FFEA00;
     -mfx-text-he: rgba(0, 0, 0, 0.87); /* High Emphasis */
     -mfx-text-me: rgba(0, 0, 0, 0.60); /* Medium Emphasis*/
@@ -42,8 +40,32 @@
 
 
 
+.text-input {
+    -fx-text-fill: #ffffe6;
+    -fx-highlight-fill: #ffffe6;
+    -fx-highlight-text-fill: #ffffe6;
+   /* -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -10%), -fx-text-box-border),
+    linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 3, 2;
+    -fx-cursor: text;
+    -fx-padding: 0.333333em 0.583em 0.333333em 0.583em; !* 4 7 4 7 *!*/
+}
 
+.text-input:focused {
+    -fx-text-inner-color: #ffffe6;
+    /*-fx-highlight-fill: -fx-accent;*/
+    -fx-highlight-text-fill: white;
+   /* -fx-background-color:
+            -fx-focus-color,
+            -fx-control-inner-background,
+            -fx-faint-focus-color,
+            linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);
+    -fx-background-insets: -0.2, 1, -1.4, 3;
+    -fx-background-radius: 3, 2, 4, 0;*/
 
+}
 
 
 
@@ -276,9 +298,11 @@
 .tree-cell {
     -fx-padding: 0.75em 0em 0.75em 0em ;
 }
+/*
 .tree-cell:sub-tree-item {
     -fx-padding: 0.25em ;
 }
+*/
 
 
 .tree-cell:filled:selected:focused, .tree-cell:filled:selected {
@@ -478,4 +502,53 @@
     -fx-background-color: #c1cbd0;
     -fx-text-fill: white;
 }*/
+
+/**************************************************
+ * Progress Bars
+**************************************************/
+#customBar1 .bar1 {
+    -fx-fill: linear-gradient(to right bottom, #c4008b, #d00085, #dc007f, #e60b79, #ef1872, #f5276b, #fa3564, #fe415e, #ff5158, #ff5f52, #ff6c4e, #ff794b);
+}
+
+#customBar1 .bar2 {
+    -fx-fill: linear-gradient(to right bottom, #1ec400, #00bd3a, #00b654, #00ae67, #00a574, #00a280, #009e8a, #009a91, #009b9d, #009ba8, #009bb2, #009abb);
+}
+
+#customBar2 .track {
+    -fx-fill: #7a0ed9;
+    -fx-stroke: #7a0ed9;
+    -fx-stroke-width: 2;
+}
+
+#customBar2 .bar1,
+#customBar2 .bar2 {
+    -fx-stroke: #7a0ed9;
+    -fx-stroke-width: 1;
+    -fx-fill: white;
+}
+
+
+#determinateBar:range1 .bar1 {
+    -fx-fill: #EF6E6B;
+}
+
+#determinateBar:range1 .track {
+    -fx-fill: derive(#EF6E6B, 85%)
+}
+
+#determinateBar:range2 .bar1 {
+    -fx-fill: #2196f3;
+}
+
+#determinateBar:range2 .track {
+    -fx-fill: derive(#2196f3, 85%)
+}
+
+#determinateBar:range3 .bar1 {
+    -fx-fill:  #4caf50;
+}
+
+#determinateBar:range3 .track {
+    -fx-fill: derive( #4caf50, 85%);
+}
 

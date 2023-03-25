@@ -234,6 +234,7 @@ public Accordion accordion;
                 if (!cell.isEmpty()) {
                     System.out.println("You clicked on " + cell.getItem());
                     e.consume();
+                    // look for the object
                 }
             });
             return cell;
